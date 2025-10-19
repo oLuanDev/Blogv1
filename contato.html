@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link">Conteúdos</a>
+        <a href="jogos.html" class="nav-link">Jogos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+        <a href="contato.html" class="nav-link active">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="article-hero" style="background-image: url('https://via.placeholder.com/1920x500/212529/FFFFFF?text=');">
+        <div class="hero-text-content">
+            <h1>Entre em Contato</h1>
+            <p class="article-subtitle">Tem alguma dúvida, sugestão ou parceria? Adoraríamos ouvir você!</p>
+        </div>
+    </section>
+
+    <div class="container article-page">
+      <div class="contact-section">
+          <div class="contact-grid">
+              <div class="contact-info">
+                  <h3>Nossas Informações</h3>
+                  <p>Estamos sempre disponíveis para conversar sobre o fascinante mundo da logística. Entre em contato conosco através dos canais abaixo.</p>
+                  <div class="info-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                      <span>contato@beeway.com</span>
+                  </div>
+                  <div class="info-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                      <span>+55 (11) 99999-8888</span>
+                  </div>
+                   <div class="info-item">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                      <span>São Paulo, SP - Brasil</span>
+                  </div>
+              </div>
+              <form class="contact-form">
+                  <h3>Envie sua Mensagem</h3>
+                  <div class="form-group">
+                      <label for="name">Nome</label>
+                      <input type="text" id="name" name="name" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="email">E-mail</label>
+                      <input type="email" id="email" name="email" required>
+                  </div>
+                   <div class="form-group">
+                      <label for="message">Mensagem</label>
+                      <textarea id="message" name="message" rows="5" required></textarea>
+                  </div>
+                  <button type="submit" class="btn-primary">Enviar</button>
+              </form>
+          </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay — Simplificando a logística para você.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile Menu Toggle
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const mainNav = document.getElementById('mainNav');
+
+      if (menuToggle && mainNav) {
+          menuToggle.addEventListener('click', () => {
+              const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+              menuToggle.setAttribute('aria-expanded', !isExpanded);
+              mainNav.classList.toggle('mobile-nav-open');
+          });
+      }
+    });
+  </script>
+
+</body>
+</html>

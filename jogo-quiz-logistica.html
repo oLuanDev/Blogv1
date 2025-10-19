@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo: Quiz de Logística | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    :root {
+        --game-bg: #f8f9fa;
+        --game-border: #dee2e6;
+        --game-shadow: rgba(0,0,0,0.07);
+        --correct-color: #2a9d8f;
+        --incorrect-color: #e76f51;
+        --game-dark-blue: #1D3557;
+        --neutral-color: #6c757d;
+    }
+
+    .quiz-wrapper {
+        background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-top: 40px;
+        text-align: center;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .game-screen { display: none; animation: fadeIn 0.5s ease-in-out; }
+    .game-screen.active { display: block; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .game-title h2 { font-size: 2rem; margin-bottom: 10px; }
+    .game-title p, #start-screen p { color: var(--secondary-text); max-width: 600px; margin: 0 auto 30px; }
+
+    .game-button {
+      background-color: var(--primary-yellow);
+      color: var(--dark-text); font-weight: 600; padding: 15px 30px; border-radius: 50px;
+      display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4); border: none; cursor: pointer; font-size: 1.1rem;
+    }
+    .game-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 183, 3, 0.5); }
+    .end-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;}
+
+    #progress-bar-container {
+        width: 100%;
+        height: 10px;
+        background-color: var(--game-border);
+        border-radius: 5px;
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+    #progress-bar {
+        width: 0%;
+        height: 100%;
+        background-color: var(--primary-orange);
+        transition: width 0.3s ease;
+    }
+
+    #question-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px var(--game-shadow);
+    }
+    #question-text {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 25px;
+        min-height: 60px;
+    }
+
+    #answer-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .answer-btn {
+        background-color: #fff;
+        border: 2px solid var(--game-border);
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .answer-btn:hover:not(:disabled) {
+        border-color: var(--primary-yellow);
+        transform: translateY(-2px);
+    }
+    .answer-btn:disabled { cursor: not-allowed; }
+    .answer-btn.correct {
+        background-color: var(--correct-color);
+        border-color: var(--correct-color);
+        color: #fff;
+    }
+     .answer-btn.incorrect {
+        background-color: var(--incorrect-color);
+        border-color: var(--incorrect-color);
+        color: #fff;
+    }
+
+    #end-screen h3 { font-size: 1.8rem; margin-bottom: 15px; }
+    #final-results p { font-size: 1.2rem; margin-bottom: 10px; }
+    #final-results strong { font-size: 1.5rem; }
+    #final-message { font-size: 1.3rem; margin-top: 20px; font-weight: 700;}
+    #final-message.excellent { color: var(--correct-color); }
+    #final-message.good { color: var(--primary-orange); }
+    #final-message.improve { color: var(--incorrect-color); }
+
+    .educational-note {
+        margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--game-border);
+        font-style: italic; color: var(--secondary-text);
+    }
+
+    @media (max-width: 768px) {
+        .quiz-wrapper { padding: 20px; }
+        #answer-options { grid-template-columns: 1fr; }
+        #question-text { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/><path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/><path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/><path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/><path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/></svg>
+        <div class="logo-text"> <h1>BeeWay</h1> </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link">Conteúdos</a>
+        <a href="jogos.html" class="nav-link active">Jogos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container article-page" style="padding-top: 40px;">
+      <div class="quiz-wrapper">
+
+        <div id="start-screen" class="game-screen active">
+            <div class="game-title">
+                <h2>Quiz de Logística</h2>
+                <p>Teste seus conhecimentos sobre o fascinante mundo da logística. Responda às perguntas e descubra se você é um verdadeiro especialista!</p>
+            </div>
+            <button id="start-button" class="game-button">Começar o Quiz!</button>
+        </div>
+
+        <div id="game-play-screen" class="game-screen">
+            <div id="progress-bar-container"><div id="progress-bar"></div></div>
+            <div id="question-container">
+                <p id="question-text">Carregando pergunta...</p>
+                <div id="answer-options">
+                    <button class="answer-btn"></button>
+                    <button class="answer-btn"></button>
+                    <button class="answer-btn"></button>
+                    <button class="answer-btn"></button>
+                </div>
+            </div>
+        </div>
+
+        <div id="end-screen" class="game-screen">
+            <h3>Fim de Jogo!</h3>
+            <div id="final-results">
+                <p>Pontuação Final: <strong id="final-score">0</strong></p>
+                <p>Acertos: <strong id="final-percentage">0%</strong></p>
+            </div>
+            <h4 id="final-message"></h4>
+            <div class="educational-note">
+                <p>Na logística, conhecimento é essencial para tomar decisões rápidas e eficientes.</p>
+            </div>
+            <div class="end-buttons">
+                <button id="replay-button" class="game-button">🔁 Jogar Novamente</button>
+                <a href="jogos.html" class="game-button">⬅️ Voltar ao Menu</a>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay — Simplificando a logística para você.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        const mainNav = document.getElementById('mainNav');
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                menuToggle.setAttribute('aria-expanded', !isExpanded);
+                mainNav.classList.toggle('mobile-nav-open');
+            });
+        }
+        
+        // --- GAME LOGIC ---
+        const QUESTIONS = [
+            { question: "O que significa o termo 'Just in Time' (JIT) na gestão de estoques?", answers: ["Comprar em grandes lotes", "Receber materiais no momento exato da sua necessidade", "Manter um grande estoque de segurança", "Estocar apenas produtos acabados"], correct: 1 },
+            { question: "Qual o modal de transporte mais indicado e econômico para transportar grandes volumes (ex: grãos) por longas distâncias dentro de um país?", answers: ["Aéreo", "Rodoviário", "Dutoviário", "Ferroviário"], correct: 3 },
+            { question: "Qual o principal objetivo da Logística Reversa?", answers: ["Acelerar a entrega final", "Gerenciar o retorno de produtos e materiais à cadeia de suprimentos", "Reduzir custos de transporte", "Planejar a compra de matéria-prima"], correct: 1 },
+            { question: "A metodologia de gestão de estoque 'FIFO' (First In, First Out) significa que:", answers: ["O primeiro a entrar é o último a sair", "O produto mais caro sai primeiro", "O primeiro produto a entrar no estoque deve ser o primeiro a sair", "Apenas os produtos mais novos são vendidos"], correct: 2 },
+            { question: "O que é 'Cross-docking'?", answers: ["Um tipo de empilhadeira", "Um sistema onde a mercadoria é redistribuída diretamente do recebimento para a expedição, sem estocagem", "Armazenagem em docas refrigeradas", "Uma conferência de estoque"], correct: 1 },
+            { question: "Qual a principal função de um WMS (Warehouse Management System)?", answers: ["Rastrear frotas de caminhões", "Fazer a previsão de vendas", "Gerenciar e otimizar as operações de um armazém", "Criar notas fiscais eletrônicas"], correct: 2 },
+            { question: "A sigla 'KPI', muito usada em logística, significa:", answers: ["Controle de Processo Interno", "Key Performance Indicator (Indicador-chave de Desempenho)", "Nível de Prioridade de Inventário", "Conhecimento Padrão da Indústria"], correct: 1 },
+            { question: "Qual destas atividades NÃO faz parte da Cadeia de Suprimentos (Supply Chain)?", answers: ["Compras de matéria-prima", "Produção e montagem", "Marketing e propaganda do produto", "Distribuição e entrega ao cliente"], correct: 2 },
+            { question: "Qual o objetivo da metodologia 5S em um armazém?", answers: ["Aumentar o número de funcionários", "Comprar equipamentos mais caros", "Criar um ambiente de trabalho mais organizado, limpo e seguro", "Reduzir o salário da equipe"], correct: 2 },
+            { question: "O que é um 'modal de transporte'?", answers: ["O modelo do veículo utilizado", "A marca do caminhão", "O tipo ou meio de transporte utilizado (ex: rodoviário, aéreo, etc.)", "O motorista responsável pela entrega"], correct: 2 }
+        ];
+
+        const startScreen = document.getElementById('start-screen');
+        const gamePlayScreen = document.getElementById('game-play-screen');
+        const endScreen = document.getElementById('end-screen');
+        const startButton = document.getElementById('start-button');
+        const replayButton = document.getElementById('replay-button');
+
+        const progressBar = document.getElementById('progress-bar');
+        const questionText = document.getElementById('question-text');
+        const answerButtons = document.querySelectorAll('.answer-btn');
+        
+        const finalScoreEl = document.getElementById('final-score');
+        const finalPercentageEl = document.getElementById('final-percentage');
+        const finalMessageEl = document.getElementById('final-message');
+
+        let score, currentQuestionIndex, shuffledQuestions, audioCtx;
+        
+        const playSound = (type) => {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+            if (type === 'correct') {
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+            } else if (type === 'incorrect') {
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+            }
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.4);
+        };
+
+        const switchScreen = (screen) => {
+            document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+            screen.classList.add('active');
+        };
+
+        const startGame = () => {
+            score = 0;
+            currentQuestionIndex = 0;
+            shuffledQuestions = [...QUESTIONS].sort(() => Math.random() - 0.5);
+            switchScreen(gamePlayScreen);
+            showQuestion();
+        };
+
+        const showQuestion = () => {
+            resetButtonStates();
+            const question = shuffledQuestions[currentQuestionIndex];
+            
+            progressBar.style.width = `${((currentQuestionIndex) / QUESTIONS.length) * 100}%`;
+            questionText.textContent = question.question;
+
+            answerButtons.forEach((button, index) => {
+                button.textContent = question.answers[index];
+                button.dataset.correct = (index === question.correct);
+            });
+        };
+        
+        const resetButtonStates = () => {
+            answerButtons.forEach(button => {
+                button.disabled = false;
+                button.classList.remove('correct', 'incorrect');
+            });
+        };
+
+        const selectAnswer = (e) => {
+            const selectedButton = e.target;
+            const isCorrect = selectedButton.dataset.correct === 'true';
+
+            if (isCorrect) {
+                score++;
+                playSound('correct');
+                selectedButton.classList.add('correct');
+            } else {
+                playSound('incorrect');
+                selectedButton.classList.add('incorrect');
+                // Show the correct answer
+                answerButtons.forEach(btn => {
+                    if (btn.dataset.correct === 'true') {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+
+            answerButtons.forEach(btn => btn.disabled = true);
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < QUESTIONS.length) {
+                    showQuestion();
+                } else {
+                    endGame();
+                }
+            }, 1500);
+        };
+
+        const endGame = () => {
+            progressBar.style.width = '100%';
+            const percentage = Math.round((score / QUESTIONS.length) * 100);
+            
+            finalScoreEl.textContent = score;
+            finalPercentageEl.textContent = `${percentage}%`;
+            finalMessageEl.className = '';
+
+            if (percentage >= 80) {
+                finalMessageEl.textContent = '🟢 Excelente! Você domina os conceitos logísticos.';
+                finalMessageEl.classList.add('excellent');
+            } else if (percentage >= 50) {
+                finalMessageEl.textContent = '🟡 Bom desempenho! Continue aprendendo.';
+                finalMessageEl.classList.add('good');
+            } else {
+                finalMessageEl.textContent = '🔴 Você pode melhorar! Estude mais sobre logística.';
+                finalMessageEl.classList.add('improve');
+            }
+
+            switchScreen(endScreen);
+        };
+
+        startButton.addEventListener('click', startGame);
+        replayButton.addEventListener('click', startGame);
+        answerButtons.forEach(button => {
+            button.addEventListener('click', selectAnswer);
+        });
+    });
+  </script>
+
+</body>
+</html>

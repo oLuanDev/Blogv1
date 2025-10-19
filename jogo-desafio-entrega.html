@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo: Desafio do Tempo de Entrega | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    :root {
+        --game-bg: #f8f9fa;
+        --game-border: #dee2e6;
+        --game-shadow: rgba(0,0,0,0.07);
+        --correct-color: #2a9d8f;
+        --incorrect-color: #e76f51;
+        --timer-bar-color: var(--primary-orange);
+        --game-dark-blue: #1D3557;
+    }
+
+    .delivery-game-wrapper {
+        background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-top: 40px;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    .game-screen {
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    .game-screen.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    #start-screen h2, #end-screen h2 {
+        font-size: 2rem;
+        color: var(--dark-text);
+        margin-bottom: 10px;
+    }
+    #start-screen p, #end-screen p {
+        font-size: 1.1rem;
+        color: var(--secondary-text);
+        max-width: 600px;
+        margin: 0 auto 30px;
+    }
+    
+    .game-button {
+      background-color: var(--primary-yellow);
+      color: var(--dark-text);
+      font-weight: 600;
+      padding: 15px 30px;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    .game-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 183, 3, 0.5);
+    }
+    
+    .game-hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .score-display, .time-display {
+        background-color: #fff;
+        padding: 10px 20px;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px var(--game-shadow);
+        min-width: 120px;
+    }
+    .score-display span { color: var(--correct-color); }
+    .time-display span { color: var(--game-dark-blue); }
+
+    .order-card {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px var(--game-shadow);
+        margin-bottom: 30px;
+        min-height: 120px;
+    }
+    #order-description {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin: 0;
+    }
+
+    .question-timer-bar {
+        width: 100%;
+        height: 10px;
+        background-color: var(--game-border);
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 30px;
+    }
+    #timer-progress {
+        height: 100%;
+        width: 100%;
+        background-color: var(--timer-bar-color);
+        border-radius: 5px;
+        transition: width 0.1s linear;
+    }
+
+    .modal-options {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .modal-btn {
+        background-color: #fff;
+        border: 2px solid var(--game-border);
+        border-radius: 8px;
+        padding: 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .modal-btn:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary-yellow);
+        box-shadow: 0 8px 20px var(--game-shadow);
+    }
+    .modal-btn .icon {
+        font-size: 2.5rem;
+    }
+
+    .modal-btn.correct { animation: correct-flash 0.5s ease; }
+    .modal-btn.incorrect { animation: incorrect-shake 0.5s ease; }
+
+    @keyframes correct-flash {
+        50% { background-color: var(--correct-color); color: #fff; border-color: var(--correct-color); }
+    }
+    @keyframes incorrect-shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
+        50%, 100% { background-color: var(--incorrect-color); color: #fff; border-color: var(--incorrect-color); }
+    }
+
+    #final-score {
+        font-size: 3rem;
+        font-weight: 700;
+        margin: 20px 0;
+    }
+    #final-message.excellent { color: var(--correct-color); }
+    #final-message.good { color: var(--primary-orange); }
+    #final-message.inefficient { color: var(--incorrect-color); }
+
+    @media (max-width: 768px) {
+        .delivery-game-wrapper { padding: 20px; }
+        .modal-options {
+            grid-template-columns: 1fr;
+        }
+        .modal-btn {
+            flex-direction: row;
+            justify-content: center;
+        }
+        #order-description {
+            font-size: 1.1rem;
+        }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link">Conteúdos</a>
+        <a href="jogos.html" class="nav-link active">Jogos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container article-page" style="padding-top: 40px;">
+      <div class="delivery-game-wrapper">
+
+        <div id="start-screen" class="game-screen active">
+            <h2>Desafio do Tempo de Entrega</h2>
+            <p>Pedidos surgirão na tela. Escolha o modal de transporte correto antes que o tempo acabe. Acerte para ganhar pontos, mas cuidado, erros e atrasos custam caro!</p>
+            <button id="start-button" class="game-button">Começar o Desafio!</button>
+        </div>
+
+        <div id="game-play-screen" class="game-screen">
+            <div class="game-hud">
+                <div class="score-display">Pontos: <span id="score-value">0</span></div>
+                <div class="time-display">Tempo: <span id="game-time-value">60</span>s</div>
+            </div>
+            <div class="order-card">
+                <p id="order-description">Carregando pedido...</p>
+            </div>
+            <div class="question-timer-bar">
+                <div id="timer-progress"></div>
+            </div>
+            <div class="modal-options">
+                <button class="modal-btn" data-modal="road"><span class="icon">🚛</span> Rodoviário</button>
+                <button class="modal-btn" data-modal="air"><span class="icon">✈️</span> Aéreo</button>
+                <button class="modal-btn" data-modal="sea"><span class="icon">🚢</span> Marítimo</button>
+                <button class="modal-btn" data-modal="rail"><span class="icon">🚆</span> Ferroviário</button>
+            </div>
+        </div>
+
+        <div id="end-screen" class="game-screen">
+            <h2>Fim de Jogo!</h2>
+            <p>Sua pontuação final foi:</p>
+            <h3 id="final-score">0</h3>
+            <h3 id="final-message"></h3>
+            <button id="replay-button" class="game-button">Jogar Novamente</button>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay — Simplificando a logística para você.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const mainNav = document.getElementById('mainNav');
+
+      if (menuToggle && mainNav) {
+          menuToggle.addEventListener('click', () => {
+              const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+              menuToggle.setAttribute('aria-expanded', !isExpanded);
+              mainNav.classList.toggle('mobile-nav-open');
+          });
+      }
+
+      const ORDERS = [
+          { description: "Transporte de soja do Mato Grosso para o porto de Santos.", correctModal: "rail" },
+          { description: "Entrega urgente de órgãos para transplante entre capitais.", correctModal: "air" },
+          { description: "Exportação de 50 contêineres de móveis para a China.", correctModal: "sea" },
+          { description: "Distribuição de encomendas de um e-commerce para clientes na mesma cidade.", correctModal: "road" },
+          { description: "Importação de componentes eletrônicos de alto valor da Coreia do Sul.", correctModal: "air" },
+          { description: "Movimentação de minério de ferro de Carajás para o porto em São Luís.", correctModal: "rail" },
+          { description: "Transporte de carros zero km da fábrica para concessionárias em outro estado.", correctModal: "road" },
+          { description: "Envio de uma safra inteira de laranjas para a Europa.", correctModal: "sea" },
+          { description: "Entrega expressa de documentos importantes entre bairros vizinhos.", correctModal: "road" },
+          { description: "Transporte de mercadorias de baixo custo e sem urgência entre continentes.", correctModal: "sea" },
+          { description: "Carga de celulose de Três Lagoas (MS) para o litoral paulista.", correctModal: "rail" },
+          { description: "Envio de flores perecíveis da Colômbia para o Japão.", correctModal: "air" }
+      ];
+
+      const GAME_DURATION = 60;
+      const QUESTION_TIME = 7;
+
+      const startScreen = document.getElementById('start-screen');
+      const gamePlayScreen = document.getElementById('game-play-screen');
+      const endScreen = document.getElementById('end-screen');
+      const startButton = document.getElementById('start-button');
+      const replayButton = document.getElementById('replay-button');
+      const scoreValueEl = document.getElementById('score-value');
+      const gameTimeValueEl = document.getElementById('game-time-value');
+      const orderDescriptionEl = document.getElementById('order-description');
+      const timerProgressEl = document.getElementById('timer-progress');
+      const modalButtons = document.querySelectorAll('.modal-btn');
+
+      let score, gameTimer, questionTimer, gameInterval, questionInterval, currentOrder, audioCtx;
+
+      function playSound(type) {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+        if (type === 'correct') {
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+        } else {
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+        }
+
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.4);
+      }
+      
+      function switchScreen(screen) {
+          document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+          screen.classList.add('active');
+      }
+
+      function startGame() {
+          score = 0;
+          gameTimer = GAME_DURATION;
+          scoreValueEl.textContent = score;
+          gameTimeValueEl.textContent = gameTimer;
+          
+          switchScreen(gamePlayScreen);
+
+          gameInterval = setInterval(() => {
+              gameTimer--;
+              gameTimeValueEl.textContent = gameTimer;
+              if (gameTimer <= 0) {
+                  endGame();
+              }
+          }, 1000);
+
+          nextOrder();
+      }
+
+      function endGame() {
+          clearInterval(gameInterval);
+          clearInterval(questionInterval);
+          
+          document.getElementById('final-score').textContent = score;
+          const finalMessageEl = document.getElementById('final-message');
+          finalMessageEl.className = '';
+          
+          if (score >= 80) {
+              finalMessageEl.textContent = "Excelente! Você é rápido e preciso!";
+              finalMessageEl.classList.add('excellent');
+          } else if (score >= 40) {
+              finalMessageEl.textContent = "Bom desempenho! Continue treinando.";
+              finalMessageEl.classList.add('good');
+          } else {
+              finalMessageEl.textContent = "Você perdeu entregas. Atrasos custam caro!";
+              finalMessageEl.classList.add('inefficient');
+          }
+
+          switchScreen(endScreen);
+      }
+
+      function nextOrder() {
+          clearFeedback();
+          currentOrder = ORDERS[Math.floor(Math.random() * ORDERS.length)];
+          orderDescriptionEl.textContent = currentOrder.description;
+          
+          questionTimer = QUESTION_TIME;
+          timerProgressEl.style.transition = 'none';
+          timerProgressEl.style.width = '100%';
+          
+          setTimeout(() => {
+            timerProgressEl.style.transition = `width ${QUESTION_TIME}s linear`;
+            timerProgressEl.style.width = '0%';
+          }, 100);
+
+          clearInterval(questionInterval);
+          questionInterval = setInterval(() => {
+              questionTimer--;
+              if (questionTimer < 0) {
+                  handleAnswer(null);
+              }
+          }, 1000);
+      }
+
+      function handleAnswer(chosenModal) {
+          clearInterval(questionInterval);
+          const correct = chosenModal === currentOrder.correctModal;
+
+          if (correct) {
+              score += 10;
+              playSound('correct');
+              document.querySelector(`[data-modal="${chosenModal}"]`).classList.add('correct');
+          } else {
+              score -= 5;
+              playSound('incorrect');
+              if(chosenModal) {
+                  document.querySelector(`[data-modal="${chosenModal}"]`).classList.add('incorrect');
+              }
+          }
+          scoreValueEl.textContent = score;
+          
+          setTimeout(nextOrder, 800);
+      }
+
+      function clearFeedback() {
+          modalButtons.forEach(btn => {
+              btn.classList.remove('correct', 'incorrect');
+          });
+      }
+
+      startButton.addEventListener('click', startGame);
+      replayButton.addEventListener('click', startGame);
+      modalButtons.forEach(button => {
+          button.addEventListener('click', () => {
+              if (questionTimer >= 0) {
+                  handleAnswer(button.dataset.modal);
+                  questionTimer = -1;
+              }
+          });
+      });
+    });
+  </script>
+
+</body>
+</html>

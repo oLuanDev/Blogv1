@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeeWay - Home | Simplificando a logística para você</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "vite": "https://aistudiocdn.com/vite@^7.1.10"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="conteudos.html" class="nav-link">Conteúdos</a>
+        <a href="jogos.html" class="nav-link">Jogos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-content">
+        <h2>Simplificando a logística para você.</h2>
+        <p>Bem-vindo ao BeeWay, um blog acadêmico dedicado a desvendar o universo da logística de forma criativa, moderna e dinâmica. Nossa missão é transformar conceitos complexos em conhecimento acessível para todos.</p>
+        <form class="hero-search-form" action="conteudos.html" method="GET">
+            <input type="search" name="q" placeholder="Pesquisar tópicos de logística..." aria-label="Pesquisar">
+            <button type="submit" aria-label="Pesquisar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+        </form>
+      </div>
+      <div class="flying-bees">
+        <div class="bee">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.9,13.9c-0.5-2.2-2-3.4-3.5-3.4c-1.5,0-3,1.2-3.5,3.4c-0.4,1.9,0.7,3.5,2,4.3C19.7,18.8,22.9,16.8,22.9,13.9z" fill="#FFB703"></path><path d="M14,15.3c0,0-2.3-1.6-3.3-0.9s-0.5,2.4-0.5,2.4s1.2,1.3,2.2,0.6S14,15.3,14,15.3z" fill="#FFF"></path><path d="M26,15.3c0,0,2.3-1.6,3.3-0.9s0.5,2.4,0.5,2.4s-1.2,1.3-2.2,0.6S26,15.3,26,15.3z" fill="#FFF"></path><path d="M19.4,10.5c-1.5,0-3,1.2-3.5,3.4c-0.4,1.9,0.7,3.5,2,4.3c-0.2,0.8-0.5,1.6-0.9,2.4c-1,1.9-2.5,3.4-4.5,4.5c-0.5,0.3-1,0.5-1.5,0.8c-1,0.5-2,1-3,1.5c-1,0.5-2,1-3,1.5c-0.1,0.1-0.3,0.1-0.4,0.2c-0.1,0-0.2,0-0.3-0.1c-0.1-0.1-0.2-0.2-0.1-0.4c0-0.1,0.1-0.2,0.2-0.3c2.2-1.1,4.4-2.2,6.5-3.5c1-0.6,2.1-1.3,3.1-2c0.8-0.5,1.5-1.1,2.2-1.8c1.5-1.5,2.7-3.4,3.5-5.5c0.2-0.6,0.4-1.2,0.5-1.8C22.9,16.8,19.7,18.8,19.4,10.5z" fill="#212529"></path></svg>
+        </div>
+         <div class="bee">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.9,13.9c-0.5-2.2-2-3.4-3.5-3.4c-1.5,0-3,1.2-3.5,3.4c-0.4,1.9,0.7,3.5,2,4.3C19.7,18.8,22.9,16.8,22.9,13.9z" fill="#FFB703"></path><path d="M14,15.3c0,0-2.3-1.6-3.3-0.9s-0.5,2.4-0.5,2.4s1.2,1.3,2.2,0.6S14,15.3,14,15.3z" fill="#FFF"></path><path d="M26,15.3c0,0,2.3-1.6,3.3-0.9s0.5,2.4,0.5,2.4s-1.2,1.3-2.2,0.6S26,15.3,26,15.3z" fill="#FFF"></path><path d="M19.4,10.5c-1.5,0-3,1.2-3.5,3.4c-0.4,1.9,0.7,3.5,2,4.3c-0.2,0.8-0.5,1.6-0.9,2.4c-1,1.9-2.5,3.4-4.5,4.5c-0.5,0.3-1,0.5-1.5,0.8c-1,0.5-2,1-3,1.5c-1,0.5-2,1-3,1.5c-0.1,0.1-0.3,0.1-0.4,0.2c-0.1,0-0.2,0-0.3-0.1c-0.1-0.1-0.2-0.2-0.1-0.4c0-0.1,0.1-0.2,0.2-0.3c2.2-1.1,4.4-2.2,6.5-3.5c1-0.6,2.1-1.3,3.1-2c0.8-0.5,1.5-1.1,2.2-1.8c1.5-1.5,2.7-3.4,3.5-5.5c0.2-0.6,0.4-1.2,0.5-1.8C22.9,16.8,19.7,18.8,19.4,10.5z" fill="#212529"></path></svg>
+        </div>
+         <div class="bee">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22.9,13.9c-0.5-2.2-2-3.4-3.5-3.4c-1.5,0-3,1.2-3.5,3.4c-0.4,1.9,0.7,3.5,2,4.3C19.7,18.8,22.9,16.8,22.9,13.9z" fill="#FFB703"></path><path d="M14,15.3c0,0-2.3-1.6-3.3-0.9s-0.5,2.4-0.5,2.4s1.2,1.3,2.2,0.6S14,15.3,14,15.3z" fill="#FFF"></path><path d="M26,15.3c0,0,2.3-1.6,3.3-0.9s0.5,2.4,0.5,2.4s-1.2,1.3-2.2,0.6S26,15.3,26,15.3z" fill="#FFF"></path><path d="M19.4,10.5c-1.5,0-3,1.2-3.5,3.4c-0.4,1.9,0.7,3.5,2,4.3c-0.2,0.8-0.5,1.6-0.9,2.4c-1,1.9-2.5,3.4-4.5,4.5c-0.5,0.3-1,0.5-1.5,0.8c-1,0.5-2,1-3,1.5c-1,0.5-2,1-3,1.5c-0.1,0.1-0.3,0.1-0.4,0.2c-0.1,0-0.2,0-0.3-0.1c-0.1-0.1-0.2-0.2-0.1-0.4c0-0.1,0.1-0.2,0.2-0.3c2.2-1.1,4.4-2.2,6.5-3.5c1-0.6,2.1-1.3,3.1-2c0.8-0.5,1.5-1.1,2.2-1.8c1.5-1.5,2.7-3.4,3.5-5.5c0.2-0.6,0.4-1.2,0.5-1.8C22.9,16.8,19.7,18.8,19.4,10.5z" fill="#212529"></path></svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="topics-section">
+      <div class="container">
+        <h3 class="section-title">Explore Nossos Conteúdos</h3>
+        <div class="carousel-wrapper">
+          <button class="carousel-btn prev-btn" aria-label="Artigo anterior">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <div class="cards-container">
+            <div class="cards-grid">
+              
+              <a href="oque-e-logistica.html" class="card" style="background-image: url('https://images.unsplash.com/photo-1577564533418-a3e35a79e5ba?w=400&h=500&fit=crop&q=80');">
+                <div class="card-content">
+                  <h4>O que é Logística?</h4>
+                  <p>Descubra os fundamentos, a importância e a evolução da logística no cenário global atual.</p>
+                  <div class="card-meta">
+                    <span>📅 18/10/2025</span>
+                    <span>👁️ 345 views</span>
+                  </div>
+                </div>
+              </a>
+    
+              <a href="logistica-integrada.html" class="card" style="background-image: url('https://images.unsplash.com/photo-1586528116311-06924211a1b8?w=400&h=500&fit=crop&q=80');">
+                <div class="card-content">
+                  <h4>Logística Integrada</h4>
+                  <p>Entenda como a integração de processos otimiza a cadeia de suprimentos e gera valor.</p>
+                  <div class="card-meta">
+                    <span>📅 15/10/2025</span>
+                    <span>👁️ 218 views</span>
+                  </div>
+                </div>
+              </a>
+    
+              <a href="metodologias-ageis.html" class="card" style="background-image: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400&h=500&fit=crop&q=80');">
+                 <div class="card-content">
+                  <h4>Metodologias Ágeis</h4>
+                  <p>Veja como Scrum e Kanban podem ser aplicados para agilizar projetos e operações logísticas.</p>
+                  <div class="card-meta">
+                    <span>📅 12/10/2025</span>
+                    <span>👁️ 189 views</span>
+                  </div>
+                </div>
+              </a>
+    
+              <a href="compras.html" class="card" style="background-image: url('https://images.unsplash.com/photo-1556742502-ec7c0e2426e2?w=400&h=500&fit=crop&q=80');">
+                <div class="card-content">
+                  <h4>Compras</h4>
+                  <p>Aprenda sobre estratégias, negociação com fornecedores e a gestão de aquisições.</p>
+                   <div class="card-meta">
+                    <span>📅 10/10/2025</span>
+                    <span>👁️ 152 views</span>
+                  </div>
+                </div>
+              </a>
+
+              <a href="recebimento-materiais.html" class="card" style="background-image: url('https://images.unsplash.com/photo-1576185250199-3c32b55b35f2?w=400&h=500&fit=crop&q=80');">
+                <div class="card-content">
+                  <h4>Recebimento de Materiais</h4>
+                  <p>Entenda a importância e as etapas críticas da porta de entrada do seu armazém.</p>
+                   <div class="card-meta">
+                    <span>📅 25/10/2025</span>
+                    <span>👁️ 123 views</span>
+                  </div>
+                </div>
+              </a>
+
+            </div>
+          </div>
+          <button class="carousel-btn next-btn" aria-label="Próximo artigo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Carousel Script
+      const cardsContainer = document.querySelector('.cards-container');
+      const prevBtn = document.querySelector('.prev-btn');
+      const nextBtn = document.querySelector('.next-btn');
+      
+      if (cardsContainer && prevBtn && nextBtn) {
+        const card = document.querySelector('.card');
+        if (card) {
+          const gridGap = parseFloat(window.getComputedStyle(cardsContainer.querySelector('.cards-grid')).gap) || 30;
+          const scrollAmount = card.offsetWidth + gridGap;
+
+          const updateButtons = () => {
+            const maxScrollLeft = cardsContainer.scrollWidth - cardsContainer.clientWidth;
+            prevBtn.style.display = cardsContainer.scrollLeft > 10 ? 'flex' : 'none';
+            nextBtn.style.display = cardsContainer.scrollLeft < maxScrollLeft - 10 ? 'flex' : 'none';
+          };
+
+          nextBtn.addEventListener('click', () => {
+            cardsContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          });
+
+          prevBtn.addEventListener('click', () => {
+            cardsContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          });
+          
+          setTimeout(updateButtons, 100);
+          cardsContainer.addEventListener('scroll', updateButtons);
+          window.addEventListener('resize', updateButtons);
+        }
+      }
+
+      // Mobile Menu Toggle
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const mainNav = document.getElementById('mainNav');
+
+      if (menuToggle && mainNav) {
+          menuToggle.addEventListener('click', () => {
+              const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+              menuToggle.setAttribute('aria-expanded', !isExpanded);
+              mainNav.classList.toggle('mobile-nav-open');
+          });
+      }
+
+      // Hero background scroll effect
+      const heroSection = document.querySelector('.hero');
+      if (heroSection) {
+        const handleHeroScroll = () => {
+            // The effect will be fully visible after scrolling 400px
+            const scrollY = window.scrollY;
+            const opacity = Math.min(scrollY / 400, 1);
+            heroSection.style.setProperty('--hero-overlay-opacity', opacity);
+        };
+        window.addEventListener('scroll', handleHeroScroll, { passive: true });
+        handleHeroScroll(); // Set initial state on load
+      }
+    });
+  </script>
+
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

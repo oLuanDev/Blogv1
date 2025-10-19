@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conteúdos | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link active">Conteúdos</a>
+        <a href="jogos.html" class="nav-link">Jogos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="article-hero" style="background-image: url('https://via.placeholder.com/1920x500/212529/FFFFFF?text=');">
+        <div class="hero-text-content">
+            <h1>Bem-vindo ao Mundo Logístico</h1>
+            <p class="article-subtitle">Acesse nossos conteúdos e aprenda tudo sobre o universo da logística de forma prática e dinâmica.</p>
+        </div>
+    </section>
+
+    <div class="container article-page">
+        <div class="content-cards-grid">
+            
+            <a href="oque-e-logistica.html" class="content-card">
+                <div class="card-image" style="background-image: url('https://via.placeholder.com/400x300/1D3557/F1FAEE?text=Fundamentos');"></div>
+                <div class="card-text-content">
+                    <h4>O que é Logística?</h4>
+                    <p>Entenda os fundamentos, a importância e a evolução da logística no cenário global.</p>
+                    <span class="card-link">Acessar conteúdo &rarr;</span>
+                </div>
+            </a>
+
+            <a href="logistica-integrada.html" class="content-card">
+                <div class="card-image" style="background-image: url('https://via.placeholder.com/400x300/FFB703/212529?text=Integração');"></div>
+                <div class="card-text-content">
+                    <h4>Logística Integrada</h4>
+                    <p>Descubra como a integração de processos otimiza toda a cadeia de suprimentos.</p>
+                    <span class="card-link">Acessar conteúdo &rarr;</span>
+                </div>
+            </a>
+
+            <a href="metodologias-ageis.html" class="content-card">
+                <div class="card-image" style="background-image: url('https://via.placeholder.com/400x300/FB8500/FFFFFF?text=Metodologias');"></div>
+                <div class="card-text-content">
+                    <h4>Metodologias Ágeis</h4>
+                    <p>Aprenda Kanban, Kaizen, 5S e Just in Time aplicados à logística moderna.</p>
+                    <span class="card-link">Acessar conteúdo &rarr;</span>
+                </div>
+            </a>
+
+            <a href="compras.html" class="content-card">
+                <div class="card-image" style="background-image: url('https://via.placeholder.com/400x300/212529/FFB703?text=Compras');"></div>
+                <div class="card-text-content">
+                    <h4>Compras e Suprimentos</h4>
+                    <p>Veja como a gestão de compras e estoque influencia o desempenho logístico.</p>
+                    <span class="card-link">Acessar conteúdo &rarr;</span>
+                </div>
+            </a>
+            
+            <a href="recebimento-materiais.html" class="content-card">
+                <div class="card-image" style="background-image: url('https://via.placeholder.com/400x300/6c757d/FFFFFF?text=Recebimento');"></div>
+                <div class="card-text-content">
+                    <h4>Recebimento de Materiais</h4>
+                    <p>Aprenda sobre a primeira e crucial etapa operacional dentro de um armazém.</p>
+                    <span class="card-link">Acessar conteúdo &rarr;</span>
+                </div>
+            </a>
+
+        </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay — Simplificando a logística para você.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile Menu Toggle
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const mainNav = document.getElementById('mainNav');
+
+      if (menuToggle && mainNav) {
+          menuToggle.addEventListener('click', () => {
+              const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+              menuToggle.setAttribute('aria-expanded', !isExpanded);
+              mainNav.classList.toggle('mobile-nav-open');
+          });
+      }
+
+      // Search filter script
+      const searchParams = new URLSearchParams(window.location.search);
+      const query = searchParams.get('q');
+      
+      if (query && query.trim() !== '') {
+          const searchTerm = query.toLowerCase().trim();
+          const cards = document.querySelectorAll('.content-card');
+          const grid = document.querySelector('.content-cards-grid');
+          const heroSubtitle = document.querySelector('.article-hero .article-subtitle');
+          const heroTitle = document.querySelector('.article-hero h1');
+          let visibleCount = 0;
+
+          if (cards.length > 0) {
+            cards.forEach(card => {
+                const title = card.querySelector('h4').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                const cardShouldBeVisible = title.includes(searchTerm) || description.includes(searchTerm);
+
+                if (cardShouldBeVisible) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+          }
+
+          // Update hero text
+          if (heroTitle) heroTitle.textContent = `Resultados da Busca`;
+          
+          if (visibleCount > 0) {
+            if (heroSubtitle) heroSubtitle.textContent = `Exibindo ${visibleCount} resultado(s) para: "${query}"`;
+          } else {
+            if (heroSubtitle) heroSubtitle.textContent = `Nenhum resultado encontrado para: "${query}"`;
+            
+            if(grid) {
+                const noResultsMessage = document.createElement('div');
+                noResultsMessage.className = 'no-results-message';
+                noResultsMessage.innerHTML = '<p>Tente pesquisar por outros termos ou <a href="conteudos.html">veja todos os nossos conteúdos</a>.</p>';
+                grid.parentNode.insertBefore(noResultsMessage, grid);
+                grid.style.display = 'none'; // Hide the grid container itself
+            }
+          }
+      }
+    });
+  </script>
+
+</body>
+</html>

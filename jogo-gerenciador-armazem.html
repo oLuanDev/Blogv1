@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo: Gerenciador de Armazém | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    :root {
+        --game-bg: #f8f9fa;
+        --game-border: #dee2e6;
+        --game-shadow: rgba(0,0,0,0.07);
+        --correct-color: #2a9d8f;
+        --incorrect-color: #e76f51;
+        --game-dark-blue: #1D3557;
+    }
+
+    .warehouse-game-wrapper {
+        background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    .game-screen {
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    .game-screen.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .game-title h2 { font-size: 2rem; margin-bottom: 10px; }
+    .game-title p, #start-screen p { color: var(--secondary-text); max-width: 600px; margin: 0 auto 30px; }
+
+    .game-button {
+      background-color: var(--primary-yellow);
+      color: var(--dark-text);
+      font-weight: 600;
+      padding: 15px 30px;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    .game-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 183, 3, 0.5);
+    }
+    .end-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .game-hud {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+    .hud-item {
+        background-color: #fff;
+        padding: 10px 20px;
+        border-radius: 20px;
+        box-shadow: 0 2px 5px var(--game-shadow);
+        min-width: 120px;
+    }
+
+    #incoming-product-area {
+        background-color: var(--game-dark-blue);
+        color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #product-item {
+        background-color: #fff;
+        color: var(--dark-text);
+        padding: 15px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: grab;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        user-select: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #product-item:hover { transform: scale(1.05); }
+    #product-item.dragging { opacity: 0.5; }
+    #product-item .icon { font-size: 1.5rem; }
+
+    #warehouse-layout {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+    }
+    .warehouse-area {
+        background-color: #fff;
+        border: 2px dashed var(--game-border);
+        border-radius: 8px;
+        padding: 20px;
+        min-height: 150px;
+        transition: all 0.3s ease;
+    }
+    .warehouse-area h4 {
+        margin-bottom: 10px;
+        color: var(--secondary-text);
+        font-size: 1rem;
+    }
+    .warehouse-area.over {
+        border-color: var(--primary-yellow);
+        background-color: rgba(255, 183, 3, 0.1);
+    }
+    .warehouse-area.correct { animation: correct-flash 0.5s ease; }
+    .warehouse-area.incorrect { animation: incorrect-shake 0.5s ease; }
+
+    @keyframes correct-flash {
+        50% { background-color: rgba(42, 157, 143, 0.2); border-color: var(--correct-color); }
+    }
+    @keyframes incorrect-shake {
+        10%, 90% { transform: translateX(-2px); }
+        20%, 80% { transform: translateX(4px); }
+        30%, 50%, 70% { transform: translateX(-6px); }
+        40%, 60% { transform: translateX(6px); }
+        50%, 100% { background-color: rgba(231, 111, 81, 0.2); border-color: var(--incorrect-color); }
+    }
+
+    #final-stats h3 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    #final-stats p {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    #final-efficiency.excellent { color: var(--correct-color); font-weight: 700; }
+    #final-efficiency.good { color: var(--primary-orange); font-weight: 700; }
+    #final-efficiency.inefficient { color: var(--incorrect-color); font-weight: 700; }
+    
+    .educational-note {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--game-border);
+        font-style: italic;
+        color: var(--secondary-text);
+    }
+
+    @media (max-width: 768px) {
+        #warehouse-layout {
+            grid-template-columns: 1fr;
+        }
+        .warehouse-game-wrapper {
+            padding: 20px;
+        }
+    }
+
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link">Conteúdos</a>
+        <a href="jogos.html" class="nav-link active">Jogos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container article-page" style="padding-top: 40px;">
+      <div class="warehouse-game-wrapper">
+
+        <div id="start-screen" class="game-screen active">
+            <div class="game-title">
+                <h2>Gerenciador de Armazém</h2>
+                <p>Produtos estão chegando! Arraste cada item para a sua área correta no armazém antes que o tempo acabe. Eficiência é a chave para o sucesso!</p>
+            </div>
+            <button id="start-button" class="game-button">▶️ Iniciar Jogo</button>
+        </div>
+
+        <div id="game-play-screen" class="game-screen">
+            <div class="game-hud">
+                <div class="hud-item">Pontos: <span id="score-value">0</span></div>
+                <div class="hud-item">Tempo: <span id="game-time-value">60</span>s</div>
+            </div>
+            <div id="incoming-product-area">
+                <div id="product-item" draggable="true">
+                    <span class="icon">📦</span>
+                    <span id="product-name">Produto</span>
+                </div>
+            </div>
+            <div id="warehouse-layout">
+                <div class="warehouse-area" data-area="heavy"><h4>Estocagem de Itens Pesados</h4></div>
+                <div class="warehouse-area" data-area="refrigerated"><h4>Área Refrigerada</h4></div>
+                <div class="warehouse-area" data-area="shipping"><h4>Expedição Direta</h4></div>
+            </div>
+        </div>
+
+        <div id="end-screen" class="game-screen">
+            <div id="final-stats">
+                <h3>Fim de Jogo!</h3>
+                <p>Pontuação Final: <strong id="final-score">0</strong></p>
+                <p>Tempo Médio por Operação: <strong id="avg-time">0s</strong></p>
+                <p id="final-efficiency"></p>
+            </div>
+            <div class="educational-note">
+                <p>Na logística, organizar o armazém corretamente reduz o tempo de operação e melhora a eficiência de toda a cadeia.</p>
+            </div>
+            <div class="end-buttons">
+                <button id="replay-button" class="game-button">🔁 Jogar Novamente</button>
+                <a href="jogos.html" class="game-button">⬅️ Voltar ao Menu</a>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay — Simplificando a logística para você.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        const mainNav = document.getElementById('mainNav');
+
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                menuToggle.setAttribute('aria-expanded', !isExpanded);
+                mainNav.classList.toggle('mobile-nav-open');
+            });
+        }
+        
+        // --- GAME LOGIC ---
+        const PRODUCTS = [
+            { name: "Motor de Carro", type: "heavy", icon: "⚙️" },
+            { name: "Caixa de Leite", type: "refrigerated", icon: "🥛" },
+            { name: "Encomenda Expressa", type: "shipping", icon: "📮" },
+            { name: "Saco de Cimento", type: "heavy", icon: "🧱" },
+            { name: "Vacinas", type: "refrigerated", icon: "💉" },
+            { name: "Devolução de Cliente", type: "shipping", icon: "📦" },
+            { name: "Palete de Tijolos", type: "heavy", icon: "🧱" },
+            { name: "Iogurte", type: "refrigerated", icon: "🍦" },
+        ];
+        const GAME_DURATION = 45;
+
+        // Screens
+        const startScreen = document.getElementById('start-screen');
+        const gamePlayScreen = document.getElementById('game-play-screen');
+        const endScreen = document.getElementById('end-screen');
+
+        // Buttons
+        const startButton = document.getElementById('start-button');
+        const replayButton = document.getElementById('replay-button');
+
+        // Game Elements
+        const scoreValueEl = document.getElementById('score-value');
+        const gameTimeValueEl = document.getElementById('game-time-value');
+        const productItemEl = document.getElementById('product-item');
+        const productNameEl = document.getElementById('product-name');
+        const warehouseAreas = document.querySelectorAll('.warehouse-area');
+        
+        // End Screen Elements
+        const finalScoreEl = document.getElementById('final-score');
+        const avgTimeEl = document.getElementById('avg-time');
+        const finalEfficiencyEl = document.getElementById('final-efficiency');
+
+        let score, gameTimer, gameInterval, currentProduct, totalOperations, totalTimeForOps, audioCtx;
+        
+        function playSound(type) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+            if (type === 'correct') {
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.2);
+            } else if (type === 'incorrect') {
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+            }
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.3);
+        }
+
+        function switchScreen(screen) {
+            document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+            screen.classList.add('active');
+        }
+
+        function startGame() {
+            score = 0;
+            totalOperations = 0;
+            totalTimeForOps = 0;
+            gameTimer = GAME_DURATION;
+
+            scoreValueEl.textContent = score;
+            gameTimeValueEl.textContent = gameTimer;
+            
+            switchScreen(gamePlayScreen);
+
+            gameInterval = setInterval(() => {
+                gameTimer--;
+                totalTimeForOps++;
+                gameTimeValueEl.textContent = gameTimer;
+                if (gameTimer <= 0) {
+                    endGame();
+                }
+            }, 1000);
+
+            nextProduct();
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            finalScoreEl.textContent = score;
+            const avgTime = totalOperations > 0 ? (totalTimeForOps / totalOperations).toFixed(1) : 0;
+            avgTimeEl.textContent = `${avgTime}s`;
+            
+            finalEfficiencyEl.className = '';
+            if (score >= 40) {
+                finalEfficiencyEl.textContent = "🟢 Excelente! Seu armazém está rodando como um relógio.";
+                finalEfficiencyEl.classList.add('excellent');
+            } else if (score >= 20) {
+                finalEfficiencyEl.textContent = "🟡 Bom trabalho! Ainda dá para otimizar.";
+                finalEfficiencyEl.classList.add('good');
+            } else {
+                finalEfficiencyEl.textContent = "🔴 Muitos erros! Revise seu processo de armazenagem.";
+                finalEfficiencyEl.classList.add('inefficient');
+            }
+
+            switchScreen(endScreen);
+        }
+        
+        function nextProduct() {
+            currentProduct = PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)];
+            productNameEl.textContent = currentProduct.name;
+            productItemEl.querySelector('.icon').textContent = currentProduct.icon;
+            productItemEl.dataset.type = currentProduct.type;
+        }
+
+        function handleDrop(areaEl) {
+            const correctArea = areaEl.dataset.area === currentProduct.type;
+            
+            totalOperations++;
+            
+            if (correctArea) {
+                score += 10;
+                gameTimer = Math.min(GAME_DURATION, gameTimer + 2); // Time bonus
+                playSound('correct');
+                areaEl.classList.add('correct');
+            } else {
+                score -= 5;
+                gameTimer = Math.max(0, gameTimer - 3); // Time penalty
+                playSound('incorrect');
+                areaEl.classList.add('incorrect');
+            }
+            
+            scoreValueEl.textContent = score;
+            
+            setTimeout(() => {
+                areaEl.classList.remove('correct', 'incorrect');
+                nextProduct();
+            }, 500);
+        }
+
+        // Drag and Drop Listeners
+        productItemEl.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', currentProduct.type);
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        });
+
+        productItemEl.addEventListener('dragend', (e) => {
+            e.target.classList.remove('dragging');
+        });
+
+        warehouseAreas.forEach(area => {
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.classList.add('over');
+            });
+            area.addEventListener('dragleave', () => {
+                area.classList.remove('over');
+            });
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.classList.remove('over');
+                handleDrop(area);
+            });
+        });
+        
+        startButton.addEventListener('click', startGame);
+        replayButton.addEventListener('click', startGame);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo: BeeWay Express 3D | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden; /* Prevent scrolling */
+    }
+    #game-container {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+    #game-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .game-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      animation: fadeIn 0.5s ease-in-out;
+      z-index: 10;
+    }
+    .game-overlay h2 {
+      font-size: 3rem;
+      color: #FFB703;
+      margin-bottom: 20px;
+    }
+    .game-overlay p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 30px;
+    }
+
+    .game-button {
+      background-color: var(--primary-yellow);
+      color: var(--dark-text); font-weight: 600; padding: 15px 30px; border-radius: 50px;
+      display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4); border: none; cursor: pointer; font-size: 1.1rem;
+    }
+    .game-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 183, 3, 0.5); }
+    
+    #game-hud {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: space-between;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      pointer-events: none;
+      z-index: 5;
+    }
+    #hud-message {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.5rem;
+        background-color: rgba(0,0,0,0.5);
+        padding: 10px 20px;
+        border-radius: 10px;
+    }
+    .hidden {
+      display: none;
+    }
+     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <div id="start-screen" class="game-overlay">
+      <h2>BeeWay Express: Entrega 3D</h2>
+      <p>Pilote o caminhão pela cidade para coletar e entregar os pacotes. Use WASD para mover, MOUSE para olhar e RODA DO MOUSE para zoom. Complete as entregas antes que o tempo acabe!</p>
+      <button id="start-button" class="game-button">Iniciar Entregas</button>
+    </div>
+
+    <div id="game-hud" class="hidden">
+      <div id="score">Pontos: 0</div>
+      <div id="timer">Tempo: 120</div>
+      <div id="hud-message">Encontre o pacote!</div>
+    </div>
+
+    <div id="end-screen" class="game-overlay hidden">
+      <h2>Fim de Jogo!</h2>
+      <p id="final-score">Sua pontuação final foi: 0</p>
+      <button id="replay-button" class="game-button">Jogar Novamente</button>
+       <a href="jogos.html" class="game-button" style="margin-top: 15px;">Voltar ao Menu</a>
+    </div>
+  </div>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.167.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.167.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // --- DOM ELEMENTS ---
+    const startScreen = document.getElementById('start-screen');
+    const endScreen = document.getElementById('end-screen');
+    const gameHud = document.getElementById('game-hud');
+    const startButton = document.getElementById('start-button');
+    const replayButton = document.getElementById('replay-button');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer');
+    const messageEl = document.getElementById('hud-message');
+    const finalScoreEl = document.getElementById('final-score');
+    const canvas = document.getElementById('game-canvas');
+    
+    // --- GAME STATE ---
+    let scene, camera, renderer, controls;
+    let truck, truckBox, cityObjects = [], collisionBoxes = [];
+    let keysPressed = {};
+    let gameRunning = false;
+    let score, timeLeft, gameTimerInterval;
+    let audioCtx;
+    
+    let hasPackage = false;
+    let pickupMarker, dropoffMarker;
+    let pickupLocation, dropoffLocation;
+    let packageObject;
+
+    const locations = [
+        { x: -40, z: -40, name: "Armazém A" }, { x: 40, z: -50, name: "Depósito B" },
+        { x: 50, z: 40, name: "Doca C" }, { x: -50, z: 50, name: "Fábrica D" },
+        { x: 0, z: 50, name: "Garagem E" }, { x: -20, z: 0, name: "Pátio F" }
+    ];
+
+    function playSound(type) {
+        if (!audioCtx) return;
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+        if (type === 'pickup') {
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+        } else if (type === 'delivery') {
+            oscillator.type = 'triangle';
+            oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+        } else if (type === 'crash') {
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+        }
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + 0.5);
+    }
+    
+    function init() {
+        // Scene setup
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87ceeb);
+        scene.fog = new THREE.Fog(0x87ceeb, 100, 250);
+
+        // Camera setup
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
+        // Renderer setup
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2.0);
+        dirLight.position.set(-30, 50, -30);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.left = -100;
+        dirLight.shadow.camera.right = 100;
+        dirLight.shadow.camera.top = 100;
+        dirLight.shadow.camera.bottom = -100;
+        scene.add(dirLight);
+
+        // Controls
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.enablePan = false;
+        controls.enableDamping = true;
+        controls.minDistance = 10;
+        controls.maxDistance = 50;
+        controls.maxPolarAngle = Math.PI / 2.2;
+        
+        // Create Game Objects
+        createCity();
+        createTruck();
+        createMarkers();
+        
+        // Event Listeners
+        window.addEventListener('resize', onWindowResize);
+        document.addEventListener('keydown', (e) => keysPressed[e.key.toLowerCase()] = true);
+        document.addEventListener('keyup', (e) => keysPressed[e.key.toLowerCase()] = false);
+        startButton.addEventListener('click', startGame);
+        replayButton.addEventListener('click', startGame);
+
+        animate();
+    }
+
+    function startGame() {
+        // Initialize audio context on first user interaction.
+        if (!audioCtx) {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch(e) {
+                console.error("Web Audio API is not supported in this browser.");
+            }
+        }
+        
+        // The AudioContext may start in a suspended state. Resume it on the first gesture.
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        score = 0;
+        timeLeft = 120;
+        hasPackage = false;
+        
+        // Reset truck position
+        truck.position.set(0, 0.5, 10);
+        truck.rotation.set(0, Math.PI, 0);
+
+        updateHUD();
+        startScreen.classList.add('hidden');
+        endScreen.classList.add('hidden');
+        gameHud.classList.remove('hidden');
+        
+        if(gameTimerInterval) clearInterval(gameTimerInterval);
+        gameTimerInterval = setInterval(() => {
+            timeLeft--;
+            updateHUD();
+            if (timeLeft <= 0) {
+                endGame();
+            }
+        }, 1000);
+        
+        newDelivery();
+        gameRunning = true;
+    }
+
+    function endGame() {
+        gameRunning = false;
+        clearInterval(gameTimerInterval);
+        finalScoreEl.textContent = `Sua pontuação final foi: ${score}`;
+        gameHud.classList.add('hidden');
+        endScreen.classList.remove('hidden');
+        pickupMarker.visible = false;
+        dropoffMarker.visible = false;
+    }
+    
+    function updateHUD() {
+        scoreEl.textContent = `Pontos: ${score}`;
+        timerEl.textContent = `Tempo: ${timeLeft}`;
+    }
+    
+    function newDelivery() {
+        hasPackage = false;
+        packageObject.visible = false;
+
+        // Select new unique locations
+        let pIndex = Math.floor(Math.random() * locations.length);
+        let dIndex;
+        do {
+            dIndex = Math.floor(Math.random() * locations.length);
+        } while (dIndex === pIndex);
+
+        pickupLocation = locations[pIndex];
+        dropoffLocation = locations[dIndex];
+
+        pickupMarker.position.set(pickupLocation.x, 0.1, pickupLocation.z);
+        dropoffMarker.position.set(dropoffLocation.x, 0.1, dropoffLocation.z);
+
+        pickupMarker.visible = true;
+        dropoffMarker.visible = false;
+
+        messageEl.textContent = `Vá para ${pickupLocation.name} para coletar o pacote!`;
+    }
+
+    function createMarkers() {
+        const markerGeo = new THREE.CylinderGeometry(3, 3, 0.2, 32);
+        
+        const pickupMat = new THREE.MeshBasicMaterial({ color: 0xFFB703, transparent: true, opacity: 0.6 });
+        pickupMarker = new THREE.Mesh(markerGeo, pickupMat);
+        pickupMarker.visible = false;
+        scene.add(pickupMarker);
+        
+        const dropoffMat = new THREE.MeshBasicMaterial({ color: 0x2a9d8f, transparent: true, opacity: 0.6 });
+        dropoffMarker = new THREE.Mesh(markerGeo, dropoffMat);
+        dropoffMarker.visible = false;
+        scene.add(dropoffMarker);
+    }
+    
+    function createCity() {
+        // Ground
+        const groundGeo = new THREE.PlaneGeometry(200, 200);
+        const groundMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+        const ground = new THREE.Mesh(groundGeo, groundMat);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Roads
+        const roadMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+        const createRoad = (w, h, x, z, rotY = 0) => {
+            const road = new THREE.Mesh(new THREE.PlaneGeometry(w, h), roadMat);
+            road.position.set(x, 0.01, z);
+            road.rotation.x = -Math.PI / 2;
+            road.rotation.z = rotY;
+            road.receiveShadow = true;
+            scene.add(road);
+        };
+        createRoad(15, 200, 0, 0);
+        createRoad(200, 15, 0, 0);
+        createRoad(15, 80, 40, -60);
+        createRoad(15, 80, -40, 60);
+
+        // Buildings
+        const buildingMat1 = new THREE.MeshStandardMaterial({ color: 0xcccccc });
+        const buildingMat2 = new THREE.MeshStandardMaterial({ color: 0xaaaaaa });
+        for (let i = 0; i < 40; i++) {
+            const w = Math.random() * 10 + 10;
+            const h = Math.random() * 30 + 10;
+            const d = Math.random() * 10 + 10;
+            const building = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), Math.random() > 0.5 ? buildingMat1 : buildingMat2);
+            building.position.set((Math.random() - 0.5) * 180, h / 2, (Math.random() - 0.5) * 180);
+            
+            // Ensure buildings are not on the main roads
+            if(Math.abs(building.position.x) < 15 || Math.abs(building.position.z) < 15) continue;
+            
+            building.castShadow = true;
+            building.receiveShadow = true;
+            scene.add(building);
+            cityObjects.push(building);
+            collisionBoxes.push(new THREE.Box3().setFromObject(building));
+        }
+    }
+
+    function createTruck() {
+        truck = new THREE.Group();
+        
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0xFFB703 });
+        const darkMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+        
+        // Cabin
+        const cabin = new THREE.Mesh(new THREE.BoxGeometry(4, 3, 3), bodyMat);
+        cabin.position.set(0, 1.5, -1.5);
+        
+        // Flatbed
+        const flatbed = new THREE.Mesh(new THREE.BoxGeometry(4, 0.5, 6), darkMat);
+        flatbed.position.set(0, 0.75, 2);
+        
+        // Wheels
+        const wheelGeo = new THREE.CylinderGeometry(0.7, 0.7, 0.5, 32);
+        const createWheel = (x, z) => {
+            const wheel = new THREE.Mesh(wheelGeo, darkMat);
+            wheel.rotation.z = Math.PI / 2;
+            wheel.position.set(x, 0.7, z);
+            return wheel;
+        }
+        
+        const wheels = [ createWheel(-2.2, -1.5), createWheel(2.2, -1.5), createWheel(-2.2, 3), createWheel(2.2, 3) ];
+
+        packageObject = new THREE.Mesh(
+            new THREE.BoxGeometry(2, 2, 2),
+            new THREE.MeshStandardMaterial({ color: 0x8B4513 })
+        );
+        packageObject.position.set(0, 1.5, 2);
+        packageObject.visible = false;
+
+        truck.add(cabin, flatbed, ...wheels, packageObject);
+        truck.children.forEach(c => { c.castShadow = true; c.receiveShadow = true; });
+
+        truck.position.y = 0.5;
+        scene.add(truck);
+        truckBox = new THREE.Box3();
+    }
+    
+    let lastCollisionTime = 0;
+    function updateTruck(deltaTime) {
+        const speed = 25.0;
+        const rotationSpeed = 2.0;
+        
+        if (keysPressed['w']) truck.position.add(truck.getWorldDirection(new THREE.Vector3()).multiplyScalar(speed * deltaTime));
+        if (keysPressed['s']) truck.position.add(truck.getWorldDirection(new THREE.Vector3()).multiplyScalar(-speed * deltaTime));
+        if (keysPressed['a']) truck.rotation.y += rotationSpeed * deltaTime;
+        if (keysPressed['d']) truck.rotation.y -= rotationSpeed * deltaTime;
+
+        // Collision detection
+        truckBox.setFromObject(truck);
+        const currentTime = performance.now();
+        if (currentTime - lastCollisionTime > 1000) { // 1 second cooldown
+            for(const box of collisionBoxes) {
+                if (truckBox.intersectsBox(box)) {
+                    if (keysPressed['w']) truck.position.add(truck.getWorldDirection(new THREE.Vector3()).multiplyScalar(-speed * deltaTime * 1.1));
+                    if (keysPressed['s']) truck.position.add(truck.getWorldDirection(new THREE.Vector3()).multiplyScalar(speed * deltaTime * 1.1));
+                    score = Math.max(0, score - 10);
+                    playSound('crash');
+                    updateHUD();
+                    lastCollisionTime = currentTime;
+                    break;
+                }
+            }
+        }
+    }
+    
+    function checkGameplay() {
+        const truckPos = truck.position;
+
+        if (!hasPackage && pickupMarker.visible) {
+            const pickupPos = pickupMarker.position;
+            if (truckPos.distanceTo(pickupPos) < 4) {
+                hasPackage = true;
+                packageObject.visible = true;
+                pickupMarker.visible = false;
+                dropoffMarker.visible = true;
+                playSound('pickup');
+                messageEl.textContent = `Entregue o pacote em ${dropoffLocation.name}!`;
+            }
+        }
+        else if (hasPackage && dropoffMarker.visible) {
+            const dropoffPos = dropoffMarker.position;
+            if (truckPos.distanceTo(dropoffPos) < 4) {
+                score += 100;
+                playSound('delivery');
+                updateHUD();
+                newDelivery();
+            }
+        }
+    }
+    
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    const clock = new THREE.Clock();
+    function animate() {
+        requestAnimationFrame(animate);
+        const deltaTime = clock.getDelta();
+        
+        if (gameRunning) {
+            updateTruck(deltaTime);
+            checkGameplay();
+        }
+
+        if (truck) {
+          // Update camera to follow truck
+          const offset = new THREE.Vector3(0, 15, -20);
+          offset.applyQuaternion(truck.quaternion);
+          offset.add(truck.position);
+          camera.position.lerp(offset, 0.1);
+          
+          controls.target.copy(truck.position);
+        }
+        
+        controls.update();
+        
+        renderer.render(scene, camera);
+    }
+
+    init();
+  </script>
+
+</body>
+</html>

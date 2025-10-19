@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre Nós | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link">Conteúdos</a>
+        <a href="jogos.html" class="nav-link">Jogos</a>
+        <a href="sobre.html" class="nav-link active">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="article-hero" style="background-image: url('https://via.placeholder.com/1920x500/212529/FFFFFF?text=');">
+        <div class="hero-text-content">
+            <h1>Nossa Equipe</h1>
+            <p class="article-subtitle">As mentes por trás do BeeWay, unidas pela paixão de simplificar a logística.</p>
+        </div>
+    </section>
+
+    <div class="container article-page">
+      <div class="team-section">
+        <h3 class="section-title">Conheça os Criadores</h3>
+        <div class="team-grid">
+          
+          <div class="team-member-card">
+            <img src="https://via.placeholder.com/150" alt="Foto de perfil da Denise" class="team-member-photo">
+            <h4 class="team-member-name">Denise</h4>
+            <p class="team-member-role">Conteúdista</p>
+            <p>Denise é a especialista em logística do nosso time. Com sua vasta experiência acadêmica, ela transforma os temas mais complexos em artigos claros, precisos e fáceis de entender, garantindo a qualidade e a relevância de todo o nosso conteúdo.</p>
+          </div>
+
+          <div class="team-member-card">
+            <img src="https://via.placeholder.com/150" alt="Foto de perfil do Matheus" class="team-member-photo">
+            <h4 class="team-member-name">Matheus</h4>
+            <p class="team-member-role">Criativo</p>
+            <p>Matheus é a força criativa por trás da identidade visual do BeeWay. Ele é responsável por traduzir nossas ideias em um design moderno, dinâmico e intuitivo, criando uma experiência de navegação que torna o aprendizado mais agradável e engajador.</p>
+          </div>
+
+          <div class="team-member-card">
+            <img src="https://via.placeholder.com/150" alt="Foto de perfil do Luan" class="team-member-photo">
+            <h4 class="team-member-name">Luan</h4>
+            <p class="team-member-role">Técnico Executor</p>
+            <p>Luan é o arquiteto técnico do nosso blog. Ele transforma o design e o conteúdo em um site funcional, rápido e responsivo. Sua expertise garante que a plataforma funcione perfeitamente em qualquer dispositivo, entregando a melhor performance para nossos leitores.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay — Simplificando a logística para você.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile Menu Toggle
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const mainNav = document.getElementById('mainNav');
+
+      if (menuToggle && mainNav) {
+          menuToggle.addEventListener('click', () => {
+              const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+              menuToggle.setAttribute('aria-expanded', !isExpanded);
+              mainNav.classList.toggle('mobile-nav-open');
+          });
+      }
+    });
+  </script>
+
+</body>
+</html>

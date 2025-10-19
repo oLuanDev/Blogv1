@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo: Do Fornecedor ao Cliente | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    :root {
+      --game-bg: #f8f9fa;
+      --game-border: #dee2e6;
+      --game-shadow: rgba(0,0,0,0.07);
+      --correct-color: #2a9d8f;
+      --incorrect-color: #e76f51;
+      --game-dark-blue: #1D3557;
+    }
+    .supply-chain-game-wrapper {
+      background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-top: 40px;
+      text-align: center;
+    }
+    .game-title h2 {
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+    .game-title .logo-text {
+        font-weight: 700;
+        color: var(--primary-yellow);
+    }
+    .game-instructions {
+        color: var(--secondary-text);
+        margin-bottom: 30px;
+    }
+    .game-board {
+      display: flex;
+      justify-content: space-around;
+      gap: 15px;
+      margin-bottom: 30px;
+      min-height: 100px;
+    }
+    .drop-zone {
+      flex: 1;
+      border: 2px dashed var(--game-border);
+      border-radius: 8px;
+      background-color: #fff;
+      transition: background-color 0.3s ease;
+    }
+    .drop-zone.over {
+      background-color: rgba(255, 183, 3, 0.2);
+    }
+    .pieces-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px var(--game-shadow);
+    }
+    .piece {
+      padding: 15px 25px;
+      background-color: #fff;
+      border: 2px solid var(--game-border);
+      border-radius: 8px;
+      cursor: grab;
+      font-weight: 600;
+      box-shadow: 0 2px 5px var(--game-shadow);
+      transition: all 0.3s ease;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .piece:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px var(--game-shadow);
+    }
+    .piece.dragging {
+      opacity: 0.5;
+      background-color: #e9ecef;
+    }
+    .piece .icon {
+        font-size: 1.5rem;
+    }
+    .drop-zone .piece {
+        cursor: default;
+    }
+    .results-container {
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px var(--game-shadow);
+    }
+    .path-animation {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    .path-animation svg {
+        width: 100%;
+        height: auto;
+    }
+    .truck {
+        offset-path: path("M20,50 Q150,20 300,50 T580,50");
+        animation: drive 4s ease-in-out forwards;
+    }
+    @keyframes drive {
+      from { motion-offset: 0%; }
+      to { motion-offset: 100%; }
+    }
+    .results-text h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+    #efficiency-message.excellent { color: var(--correct-color); }
+    #efficiency-message.good { color: var(--primary-orange); }
+    #efficiency-message.inefficient { color: var(--incorrect-color); }
+
+    .educational-note {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--game-border);
+        font-style: italic;
+        color: var(--secondary-text);
+    }
+
+    #replay-button {
+      margin-top: 20px;
+      background-color: var(--primary-yellow);
+      color: var(--dark-text);
+      font-weight: 600;
+      padding: 12px 25px;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 183, 3, 0.4);
+      border: none;
+      cursor: pointer;
+    }
+    #replay-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 183, 3, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .game-board {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .drop-zone {
+            min-height: 80px;
+        }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link">Conteúdos</a>
+        <a href="jogos.html" class="nav-link active">Jogos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container article-page" style="padding-top: 40px;">
+      <div class="supply-chain-game-wrapper">
+        <div class="game-title">
+          <h2>Do Fornecedor ao Cliente</h2>
+        </div>
+        <p class="game-instructions">Arraste e solte as etapas da cadeia logística na ordem correta.</p>
+
+        <div class="game-board">
+          <div class="drop-zone" data-order="1"></div>
+          <div class="drop-zone" data-order="2"></div>
+          <div class="drop-zone" data-order="3"></div>
+          <div class="drop-zone" data-order="4"></div>
+          <div class="drop-zone" data-order="5"></div>
+        </div>
+
+        <div class="pieces-container">
+        </div>
+
+        <div class="results-container">
+            <div class="path-animation">
+                <svg viewBox="0 0 600 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20,50 Q150,20 300,50 T580,50" stroke="#cccccc" stroke-width="4" fill="none" stroke-dasharray="10 5" />
+                    <circle cx="20" cy="50" r="8" fill="#1D3557" />
+                    <circle cx="580" cy="50" r="8" fill="#FB8500" />
+                    <g class="truck">
+                        <text font-size="24">🚛</text>
+                    </g>
+                </svg>
+            </div>
+            <div class="results-text">
+                <h3>Análise da Eficiência:</h3>
+                <p>Tempo de Entrega Total: <strong id="total-time"></strong> dias</p>
+                <p>Custo Logístico Estimado: R$ <strong id="total-cost"></strong></p>
+                <p id="efficiency-message"></p>
+            </div>
+            <div class="educational-note">
+                <p>Na logística, o fluxo eficiente do fornecedor ao cliente reduz custos e aumenta a satisfação do cliente final.</p>
+            </div>
+            <button id="replay-button">Jogar Novamente</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay — Simplificando a logística para você.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        const mainNav = document.getElementById('mainNav');
+
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+                menuToggle.setAttribute('aria-expanded', !isExpanded);
+                mainNav.classList.toggle('mobile-nav-open');
+            });
+        }
+        
+        const piecesContainer = document.querySelector('.pieces-container');
+        const dropZones = document.querySelectorAll('.drop-zone');
+        const resultsContainer = document.querySelector('.results-container');
+        const replayButton = document.getElementById('replay-button');
+
+        const stages = [
+            { id: 'fornecedor', text: 'Fornecedor', icon: '👤', order: 1 },
+            { id: 'fabrica', text: 'Fábrica', icon: '🏭', order: 2 },
+            { id: 'cd', text: 'Centro de Distribuição', icon: '🏬', order: 3 },
+            { id: 'loja', text: 'Loja', icon: '🛒', order: 4 },
+            { id: 'cliente', text: 'Cliente', icon: '👤', order: 5 },
+        ];
+
+        let draggedPiece = null;
+        let audioCtx;
+
+        function playSound(type) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+            if (type === 'success') {
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+            }
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function initializeGame() {
+            piecesContainer.innerHTML = '';
+            dropZones.forEach(zone => zone.innerHTML = '');
+            resultsContainer.style.display = 'none';
+            document.querySelector('.game-board').style.display = 'flex';
+            piecesContainer.style.display = 'flex';
+
+            const shuffledStages = shuffle([...stages]);
+            shuffledStages.forEach(stage => {
+                const piece = document.createElement('div');
+                piece.className = 'piece';
+                piece.setAttribute('draggable', 'true');
+                piece.dataset.id = stage.id;
+                piece.dataset.order = stage.order;
+                piece.innerHTML = `<span class="icon">${stage.icon}</span> ${stage.text}`;
+                piecesContainer.appendChild(piece);
+            });
+            addDragListeners();
+        }
+
+        function addDragListeners() {
+            const pieces = document.querySelectorAll('.piece');
+            pieces.forEach(piece => {
+                piece.addEventListener('dragstart', handleDragStart);
+                piece.addEventListener('dragend', handleDragEnd);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedPiece = e.target;
+            e.dataTransfer.setData('text/plain', draggedPiece.dataset.id);
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('dragleave', handleDragLeave);
+            zone.addEventListener('drop', handleDrop);
+        });
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            if (!e.currentTarget.hasChildNodes()) {
+                e.currentTarget.classList.add('over');
+            }
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('over');
+            if (!e.currentTarget.hasChildNodes()) {
+                e.currentTarget.appendChild(draggedPiece);
+                draggedPiece.setAttribute('draggable', 'false');
+                checkCompletion();
+            }
+        }
+
+        function checkCompletion() {
+            const placedPieces = document.querySelectorAll('.drop-zone .piece');
+            if (placedPieces.length === stages.length) {
+                let isCorrect = true;
+                dropZones.forEach(zone => {
+                    const piece = zone.querySelector('.piece');
+                    if (piece.dataset.order !== zone.dataset.order) {
+                        isCorrect = false;
+                    }
+                });
+
+                if (isCorrect) {
+                    showResults();
+                } else {
+                    alert('Sequência incorreta! Tente reorganizar as peças.');
+                }
+            }
+        }
+
+        function showResults() {
+            playSound('success');
+            document.querySelector('.game-board').style.display = 'none';
+            piecesContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+
+            // Recalculate and display results
+            const time = Math.floor(Math.random() * 5) + 8; // 8 to 12
+            const cost = Math.floor(Math.random() * 200) + 450; // 450 to 650
+            document.getElementById('total-time').textContent = time;
+            document.getElementById('total-cost').textContent = cost.toFixed(2).replace('.', ',');
+            
+            const messageEl = document.getElementById('efficiency-message');
+            messageEl.className = '';
+            if (time <= 9 && cost <= 550) {
+                messageEl.textContent = '🟢 Excelente! Sua cadeia logística está otimizada.';
+                messageEl.classList.add('excellent');
+            } else if (time <= 11 && cost <= 600) {
+                 messageEl.textContent = '🟡 Boa! Há espaço para melhorar.';
+                 messageEl.classList.add('good');
+            } else {
+                 messageEl.textContent = '🔴 Ineficiente. Revise sua cadeia.';
+                 messageEl.classList.add('inefficient');
+            }
+        }
+
+        replayButton.addEventListener('click', initializeGame);
+
+        initializeGame();
+    });
+  </script>
+
+</body>
+</html>

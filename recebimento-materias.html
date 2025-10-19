@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recebimento de Materiais | BeeWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container">
+      <a href="index.html" class="logo-container">
+        <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5L95.5 27.5V72.5L50 95L4.5 72.5V27.5L50 5Z" fill="#FFB703"/>
+            <path d="M50 5L4.5 27.5V72.5L50 95L95.5 72.5V27.5L50 5Z" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L4.5 27.5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L50 5" stroke="#212529" strokeWidth="4"/>
+            <path d="M50 50L95.5 27.5" stroke="#212529" strokeWidth="4"/>
+        </svg>
+        <div class="logo-text">
+            <h1>BeeWay</h1>
+        </div>
+      </a>
+      <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mainNav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="conteudos.html" class="nav-link active">Conteúdos</a>
+        <a href="sobre.html" class="nav-link">Sobre nós</a>
+        <a href="recebimento-materiais.html" class="nav-link">Recebimento</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="article-hero" style="background-image: url('https://via.placeholder.com/1920x500/1D3557/F1FAEE?text=');">
+        <div class="hero-text-content">
+            <h1>Recebimento de Materiais</h1>
+            <p class="article-subtitle">A porta de entrada para a eficiência no seu estoque.</p>
+            <div class="article-meta-hero">
+                <span>📅 25/10/2025</span>
+                <span>👁️ 123 views</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="article-background-wrapper" style="--bg-image: url('https://via.placeholder.com/1920x1080/000000/FFFFFF?text=Warehouse');">
+        <div class="container article-page">
+            <article class="article-content">
+                <div class="article-body">
+                    <h2>A Porta de Entrada da Logística</h2>
+                    <p>O processo de recebimento de materiais é a primeira etapa operacional dentro de um armazém e, sem dúvida, uma das mais críticas. Ele funciona como a porta de entrada da cadeia de suprimentos interna e qualquer falha aqui pode gerar problemas em cascata, como discrepâncias de estoque, atrasos na produção e insatisfação do cliente. Um recebimento bem executado garante que os produtos corretos, na quantidade certa e em perfeitas condições, sejam integrados ao sistema de forma ágil e precisa.</p>
+
+                    <h2>Etapas Cruciais para um Recebimento Eficiente</h2>
+                    <p>Um processo de recebimento robusto geralmente segue algumas etapas-chave. Primeiro, a <strong>conferência cega</strong>, onde a equipe conta os produtos sem ter acesso à nota fiscal, para garantir uma contagem imparcial. Em seguida, a <strong>conferência documental</strong>, comparando a contagem física com o que está descrito na nota fiscal. Por fim, a <strong>inspeção de qualidade</strong>, que verifica se os produtos atendem aos padrões exigidos, evitando que itens danificados entrem no estoque. Cada etapa é vital para a integridade do inventário.</p>
+                    
+                    <h2>O Papel da Tecnologia na Otimização</h2>
+                    <p>A tecnologia é uma grande aliada para otimizar o recebimento. O uso de coletores de dados com leitores de código de barras ou QR Code automatiza a contagem e a entrada de informações no sistema, eliminando erros de digitação e agilizando o processo. Sistemas de Gestão de Armazém (WMS) podem direcionar os operadores sobre onde armazenar cada item recebido (endereçamento), otimizando o espaço e facilitando a localização futura do produto para a separação (picking).</p>
+                </div>
+
+                <footer class="article-footer">
+                    <a href="index.html" class="btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        Voltar à Home
+                    </a>
+                </footer>
+            </article>
+
+            <aside class="related-articles">
+                <h3>Explore outros tópicos</h3>
+                <div class="related-links-container">
+                    <a href="compras.html">Compras &rarr;</a>
+                    <a href="logistica-integrada.html">Logística Integrada &rarr;</a>
+                    <a href="metodologias-ageis.html">Metodologias Ágeis &rarr;</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 BeeWay. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile Menu Toggle
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const mainNav = document.getElementById('mainNav');
+
+      if (menuToggle && mainNav) {
+          menuToggle.addEventListener('click', () => {
+              const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+              menuToggle.setAttribute('aria-expanded', !isExpanded);
+              mainNav.classList.toggle('mobile-nav-open');
+          });
+      }
+    });
+  </script>
+
+</body>
+</html>
