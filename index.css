@@ -468,17 +468,15 @@ h1, h2, h3, h4 {
   padding: 60px 0;
 }
 
-.article-background-wrapper::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: 
-    linear-gradient(45deg, rgba(255, 183, 3, 0.9), rgba(251, 133, 0, 0.9)), 
-    var(--bg-image);
+
+/* Article Banner Images */
+.article-banner-image {
+  height: 300px;
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  border-radius: 12px;
+  margin: 40px 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .article-page {
@@ -572,7 +570,7 @@ h1, h2, h3, h4 {
 }
 .related-links-container a {
   font-weight: 600;
-  color: var(--primary-orange);
+  color: var(--primary-yellow);
   transition: color 0.3s ease;
 }
 .related-links-container a:hover {
@@ -632,7 +630,7 @@ h1, h2, h3, h4 {
     border: 1px solid var(--border-color);
 }
 .methodology-section h3 {
-    color: var(--primary-orange);
+    color: var(--dark-text);
     margin-bottom: 15px;
 }
 
@@ -767,7 +765,7 @@ h1, h2, h3, h4 {
 }
 .card-link {
     font-weight: 600;
-    color: var(--primary-orange);
+    color: var(--primary-yellow);
     align-self: flex-start;
     transition: color 0.3s ease;
 }
@@ -814,7 +812,7 @@ h1, h2, h3, h4 {
 }
 
 .team-member-role {
-  color: var(--primary-orange);
+  color: var(--primary-yellow);
   font-weight: 600;
   margin-bottom: 15px;
   text-transform: uppercase;
@@ -858,7 +856,7 @@ h1, h2, h3, h4 {
     color: var(--dark-text);
 }
 .info-item svg {
-    color: var(--primary-orange);
+    color: var(--primary-yellow);
     flex-shrink: 0;
 }
 
